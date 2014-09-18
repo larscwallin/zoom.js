@@ -1,13 +1,16 @@
 /*!
- * zoom.js 0.3
+ * zoom.js 0.4
  * http://lab.hakim.se/zoom-js
  * MIT licensed
  *
  * Copyright (C) 2011-2014 Hakim El Hattab, http://hakim.se
+ *
+ * Forked and extended by larscwallin.com 
+ *
  */
-var zoom = (function(){
+var zoom = (function(window){
 
-    var documentElement = document.body || document.documentElement;
+    var documentElement = window.document.body || window.document.documentElement;
     
 	// The current zoom level (scale)
 	var level = 1;
@@ -19,6 +22,9 @@ var zoom = (function(){
 	// Timeout before pan is activated
 	var panEngageTimeout = -1,
 		panUpdateInterval = -1;
+    
+    var transformDuration = 0.8;
+    var transformEasing = 'ease';
 
 	// Check for transform support so that we can fallback otherwise
 	var supportsTransforms = 	'WebkitTransform' in documentElement.style ||
@@ -29,39 +35,39 @@ var zoom = (function(){
 
 	if( supportsTransforms ) {
 		// The easing that will be applied when we zoom in/out
-		documentElement.style.transition = 'transform 0.8s ease';
-		documentElement.style.OTransition = '-o-transform 0.8s ease';
-		documentElement.style.msTransition = '-ms-transform 0.8s ease';
-		documentElement.style.MozTransition = '-moz-transform 0.8s ease';
-		documentElement.style.WebkitTransition = '-webkit-transform 0.8s ease';
+		documentElement.style.transition = 'transform ' + transformDuration + 's ' + transformEasing;
+		documentElement.style.OTransition = '-o-transform ' + transformDuration + 's '+ transformEasing;
+		documentElement.style.msTransition = '-ms-transform ' + transformDuration + 's ' + transformEasing;
+		documentElement.style.MozTransition = '-moz-transform ' + transformDuration + 's ' + transformEasing;
+		documentElement.style.WebkitTransition = '-webkit-transform ' + transformDuration + 's ' + transformEasing;
 	}
 
 	// Zoom out if the user hits escape
-	document.addEventListener( 'keyup', function( event ) {
+	window.document.addEventListener( 'keyup', function( event ) {
 		if( level !== 1 && event.keyCode === 27 ) {
 			zoom.out();
 		}
 	} );
 
 	// Monitor mouse movement for panning
-	document.addEventListener( 'mousemove', function( event ) {
+	window.document.addEventListener( 'mousemove', function( event ) {
 		if( level !== 1 ) {
 			mouseX = event.clientX;
 			mouseY = event.clientY;
 		}
 	} );
-
+    
 	/**
 	 * Applies the CSS required to zoom in, prefers the use of CSS3
 	 * transforms but falls back on zoom for IE.
 	 *
 	 * @param {Object} rect
-	 * @param {Number} scale
+	 * @param {Number} scale     
 	 */
 	function magnify( rect, scale ) {
 
-		var scrollOffset = getScrollOffset();
-
+		var scrollOffset = getScrollOffset();                
+        
 		// Ensure a width/height is set
 		rect.width = rect.width || 1;
 		rect.height = rect.height || 1;
@@ -154,7 +160,7 @@ var zoom = (function(){
 		return {
 			x: window.scrollX !== undefined ? window.scrollX : window.pageXOffset,
 			y: window.scrollY !== undefined ? window.scrollY : window.pageYOffset
-		}
+		};
 	}
 
 	return {
@@ -206,8 +212,8 @@ var zoom = (function(){
 
 						// Wait with engaging panning as it may conflict with the
 						// zoom transition
-						panEngageTimeout = setTimeout( function() {
-							panUpdateInterval = setInterval( pan, 1000 / 60 );
+						panEngageTimeout = window.setTimeout( function() {
+							panUpdateInterval = window.setInterval( pan, 1000 / 60 );
 						}, 800 );
 
 					}
@@ -219,8 +225,8 @@ var zoom = (function(){
 		 * Resets the document zoom state to its default.
 		 */
 		out: function() {
-			clearTimeout( panEngageTimeout );
-			clearInterval( panUpdateInterval );
+			window.clearTimeout( panEngageTimeout );
+			window.clearInterval( panUpdateInterval );
 
 			magnify( { x: 0, y: 0 }, 1 );
 
@@ -233,8 +239,19 @@ var zoom = (function(){
 
 		zoomLevel: function() {
 			return level;
-		}
+		},
+        
+        setTransform: function( duration, easing ){
+            if( duration && easing) {
+                // The easing that will be applied when we zoom in/out
+                documentElement.style.transition = 'transform ' + duration + 's ' + easing;
+                documentElement.style.OTransition = '-o-transform ' + duration + 's ' + easing;
+                documentElement.style.msTransition = '-ms-transform ' + duration + 's ' + easing;
+                documentElement.style.MozTransition = '-moz-transform ' + duration + 's ' + easing;
+                documentElement.style.WebkitTransition = '-webkit-transform ' + duration + 's ' + easing;
+            }        
+        }
 	}
 
-})();
+})(window);
 
