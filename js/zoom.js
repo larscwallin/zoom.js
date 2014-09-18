@@ -7,6 +7,8 @@
  */
 var zoom = (function(){
 
+    var documentElement = document.body || document.documentElement;
+    
 	// The current zoom level (scale)
 	var level = 1;
 
@@ -19,19 +21,19 @@ var zoom = (function(){
 		panUpdateInterval = -1;
 
 	// Check for transform support so that we can fallback otherwise
-	var supportsTransforms = 	'WebkitTransform' in document.body.style ||
-								'MozTransform' in document.body.style ||
-								'msTransform' in document.body.style ||
-								'OTransform' in document.body.style ||
-								'transform' in document.body.style;
+	var supportsTransforms = 	'WebkitTransform' in documentElement.style ||
+								'MozTransform' in documentElement.style ||
+								'msTransform' in documentElement.style ||
+								'OTransform' in documentElement.style ||
+								'transform' in documentElement.style;
 
 	if( supportsTransforms ) {
 		// The easing that will be applied when we zoom in/out
-		document.body.style.transition = 'transform 0.8s ease';
-		document.body.style.OTransition = '-o-transform 0.8s ease';
-		document.body.style.msTransition = '-ms-transform 0.8s ease';
-		document.body.style.MozTransition = '-moz-transform 0.8s ease';
-		document.body.style.WebkitTransition = '-webkit-transform 0.8s ease';
+		documentElement.style.transition = 'transform 0.8s ease';
+		documentElement.style.OTransition = '-o-transform 0.8s ease';
+		documentElement.style.msTransition = '-ms-transform 0.8s ease';
+		documentElement.style.MozTransition = '-moz-transform 0.8s ease';
+		documentElement.style.WebkitTransition = '-webkit-transform 0.8s ease';
 	}
 
 	// Zoom out if the user hits escape
@@ -71,48 +73,48 @@ var zoom = (function(){
 		if( supportsTransforms ) {
 			// Reset
 			if( scale === 1 ) {
-				document.body.style.transform = '';
-				document.body.style.OTransform = '';
-				document.body.style.msTransform = '';
-				document.body.style.MozTransform = '';
-				document.body.style.WebkitTransform = '';
+				documentElement.style.transform = '';
+				documentElement.style.OTransform = '';
+				documentElement.style.msTransform = '';
+				documentElement.style.MozTransform = '';
+				documentElement.style.WebkitTransform = '';
 			}
 			// Scale
 			else {
 				var origin = scrollOffset.x +'px '+ scrollOffset.y +'px',
 					transform = 'translate('+ -rect.x +'px,'+ -rect.y +'px) scale('+ scale +')';
 
-				document.body.style.transformOrigin = origin;
-				document.body.style.OTransformOrigin = origin;
-				document.body.style.msTransformOrigin = origin;
-				document.body.style.MozTransformOrigin = origin;
-				document.body.style.WebkitTransformOrigin = origin;
+				documentElement.style.transformOrigin = origin;
+				documentElement.style.OTransformOrigin = origin;
+				documentElement.style.msTransformOrigin = origin;
+				documentElement.style.MozTransformOrigin = origin;
+				documentElement.style.WebkitTransformOrigin = origin;
 
-				document.body.style.transform = transform;
-				document.body.style.OTransform = transform;
-				document.body.style.msTransform = transform;
-				document.body.style.MozTransform = transform;
-				document.body.style.WebkitTransform = transform;
+				documentElement.style.transform = transform;
+				documentElement.style.OTransform = transform;
+				documentElement.style.msTransform = transform;
+				documentElement.style.MozTransform = transform;
+				documentElement.style.WebkitTransform = transform;
 			}
 		}
 		else {
 			// Reset
 			if( scale === 1 ) {
-				document.body.style.position = '';
-				document.body.style.left = '';
-				document.body.style.top = '';
-				document.body.style.width = '';
-				document.body.style.height = '';
-				document.body.style.zoom = '';
+				documentElement.style.position = '';
+				documentElement.style.left = '';
+				documentElement.style.top = '';
+				documentElement.style.width = '';
+				documentElement.style.height = '';
+				documentElement.style.zoom = '';
 			}
 			// Scale
 			else {
-				document.body.style.position = 'relative';
-				document.body.style.left = ( - ( scrollOffset.x + rect.x ) / scale ) + 'px';
-				document.body.style.top = ( - ( scrollOffset.y + rect.y ) / scale ) + 'px';
-				document.body.style.width = ( scale * 100 ) + '%';
-				document.body.style.height = ( scale * 100 ) + '%';
-				document.body.style.zoom = scale;
+				documentElement.style.position = 'relative';
+				documentElement.style.left = ( - ( scrollOffset.x + rect.x ) / scale ) + 'px';
+				documentElement.style.top = ( - ( scrollOffset.y + rect.y ) / scale ) + 'px';
+				documentElement.style.width = ( scale * 100 ) + '%';
+				documentElement.style.height = ( scale * 100 ) + '%';
+				documentElement.style.zoom = scale;
 			}
 		}
 
